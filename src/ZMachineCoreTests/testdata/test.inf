@@ -1,0 +1,39 @@
+Constant Story "Z-Machine Explorer Test";
+
+Constant Headline
+	"^Subtitle^
+	Z-Machine Explorer Test - Version 1^
+	By Eggbertx (2026)^";
+
+Constant MAX_SCORE 100;
+
+
+Release 1;
+
+Include "Parser";
+Include "VerbLib";
+
+
+[ Initialise;
+	location = Lobby;
+];
+
+
+[ PrintRank;
+	print ", earning you the rank of ";
+	if (score >= 100) "the greatest.";
+	if (score >= 80) "above average.";
+	if (score >= 60) "average.";
+	if (score >= 40) "below average.";
+	if (score >= 20) "the barely living.";
+	"the living dead.";
+];
+
+
+Object Lobby "Hotel Lobby"
+	with  description
+		"You are standing in the lobby of a finely furnished hotel.",
+	has   light;
+
+Include "Grammar";
+
