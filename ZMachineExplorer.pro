@@ -1,6 +1,6 @@
 TEMPLATE = subdirs
 
 SUBDIRS += \
-    src/ZMachineCoreTests \
     src/ZMachineCore \
+    src/ZMachineCoreTests \
     src/ZMachineExplorer
