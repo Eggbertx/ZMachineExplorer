@@ -15,7 +15,6 @@ private slots:
     void cleanupTestCase();
     void cleanup();
     void test_case1();
-
 };
 
 ParseStoryFileHeader::ParseStoryFileHeader() {}
@@ -42,7 +41,8 @@ void ParseStoryFileHeader::cleanup()
     // code to be executed after each test function
 }
 
-void ParseStoryFileHeader::test_case1() {
+void ParseStoryFileHeader::test_case1()
+{
     ZMachineCore::ZMachineVM vm;
     QCOMPARE(vm.filePath(), "");
     QVERIFY(vm.loadFromFile("testdata/test.z5"));

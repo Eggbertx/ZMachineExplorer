@@ -1,16 +1,16 @@
-#include <QFile>
 #include "zmachinevm.h"
+#include <QFile>
 
-ZMachineCore::ZMachineVM::ZMachineVM() {
+ZMachineCore::ZMachineVM::ZMachineVM()
+{
     m_lastError = "";
     m_filePath = "";
 }
 
-bool ZMachineCore::ZMachineVM::loadFromFile(const QString& filePath)
+bool ZMachineCore::ZMachineVM::loadFromFile(const QString &filePath)
 {
     QFile storyFile(filePath);
-    if(!storyFile.open(QIODevice::ReadOnly))
-    {
+    if (!storyFile.open(QIODevice::ReadOnly)) {
         m_lastError = storyFile.errorString();
         return false;
     }
@@ -25,7 +25,7 @@ void ZMachineCore::ZMachineVM::reset()
     m_memory.setByte(HeaderAddress::InterpreterNum, m_interpreterNum);
 }
 
-QString& ZMachineCore::ZMachineVM::lastError()
+QString &ZMachineCore::ZMachineVM::lastError()
 {
     return m_lastError;
 }
@@ -43,8 +43,7 @@ uint32_t ZMachineCore::ZMachineVM::fileSize()
 void ZMachineCore::ZMachineVM::setInterpreterNum(enum InterpreterNum num, bool setInFile)
 {
     m_interpreterNum = num;
-    if(setInFile && m_memory.memorySize() > 0)
-    {
+    if (setInFile && m_memory.memorySize() > 0) {
         m_memory.setByte(HeaderAddress::InterpreterNum, num);
     }
 }

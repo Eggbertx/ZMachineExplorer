@@ -1,8 +1,8 @@
 #ifndef ZMACHINEMEMORY_H
 #define ZMACHINEMEMORY_H
 
-#include <QByteArray>
 #include <QBuffer>
+#include <QByteArray>
 #include <QDataStream>
 
 namespace ZMachineCore {
@@ -86,6 +86,7 @@ public:
     uint8_t getByte(uint16_t addr);
     void setByte(uint16_t addr, uint8_t val);
     uint16_t getWord(uint16_t addr);
+
 private:
     // data storage and manipulation
     QByteArray m_bytes;

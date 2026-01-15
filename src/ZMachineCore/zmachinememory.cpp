@@ -2,7 +2,8 @@
 
 namespace ZMachineCore {
 
-ZMachineMemory::ZMachineMemory() {
+ZMachineMemory::ZMachineMemory()
+{
     m_stream.setByteOrder(QDataStream::BigEndian);
     m_buffer.setBuffer(&m_bytes);
     m_stream.setDevice(&m_buffer);
@@ -38,7 +39,5 @@ void ZMachineMemory::setByte(uint16_t addr, uint8_t val)
     m_buffer.seek(addr);
     m_stream << val;
 }
-
-
 
 } // namespace ZMachineCore

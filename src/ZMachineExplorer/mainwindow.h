@@ -31,7 +31,9 @@ private slots:
 	void on_recentFileSelected(QAction* recentFile);
 	void on_actionClearHistory_triggered();
 
-private:
+    void on_actionRestart_triggered();
+
+    private:
     Ui::MainWindow *ui;
     QFileDialog* m_fileDialog;
     ZMachineCore::ZMachineVM m_vm;
