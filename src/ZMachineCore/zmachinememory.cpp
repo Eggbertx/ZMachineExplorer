@@ -1,3 +1,4 @@
+#include <type_traits>
 #include "zmachinememory.h"
 
 namespace ZMachineCore {
@@ -16,28 +17,14 @@ void ZMachineMemory::populate(QByteArray bytes)
     m_buffer.seek(0);
 }
 
-uint32_t ZMachineMemory::memorySize()
+qint32 ZMachineMemory::memorySize()
 {
     return m_bytes.size();
 }
 
-uint8_t ZMachineMemory::zMachineVersion()
+quint8 ZMachineMemory::zMachineVersion()
 {
-    return getByte(0);
-}
-
-uint8_t ZMachineMemory::getByte(uint16_t addr)
-{
-    uint8_t val;
-    m_buffer.seek(addr);
-    m_stream >> val;
-    return val;
-}
-
-void ZMachineMemory::setByte(uint16_t addr, uint8_t val)
-{
-    m_buffer.seek(addr);
-    m_stream << val;
+    return getInt<quint8>(0);
 }
 
 } // namespace ZMachineCore

@@ -22,7 +22,7 @@ bool ZMachineCore::ZMachineVM::loadFromFile(const QString &filePath)
 
 void ZMachineCore::ZMachineVM::reset()
 {
-    m_memory.setByte(HeaderAddress::InterpreterNum, m_interpreterNum);
+    m_memory.setInt<quint8>(HeaderAddress::InterpreterNum, m_interpreterNum);
 }
 
 QString &ZMachineCore::ZMachineVM::lastError()
@@ -35,7 +35,7 @@ QString &ZMachineCore::ZMachineVM::filePath()
     return m_filePath;
 }
 
-uint32_t ZMachineCore::ZMachineVM::fileSize()
+quint32 ZMachineCore::ZMachineVM::fileSize()
 {
     return m_memory.memorySize();
 }
@@ -44,7 +44,7 @@ void ZMachineCore::ZMachineVM::setInterpreterNum(enum InterpreterNum num, bool s
 {
     m_interpreterNum = num;
     if (setInFile && m_memory.memorySize() > 0) {
-        m_memory.setByte(HeaderAddress::InterpreterNum, num);
+        m_memory.setInt<quint8>(HeaderAddress::InterpreterNum, num);
     }
 }
 
@@ -53,7 +53,7 @@ enum ZMachineCore::InterpreterNum ZMachineCore::ZMachineVM::interpreterNumber()
     return m_interpreterNum;
 }
 
-uint8_t ZMachineCore::ZMachineVM::zMachineVersion()
+quint8 ZMachineCore::ZMachineVM::zMachineVersion()
 {
     return m_memory.zMachineVersion();
 }

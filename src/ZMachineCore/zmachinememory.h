@@ -81,14 +81,35 @@ class ZMachineMemory
 public:
     ZMachineMemory();
     void populate(QByteArray bytes);
-    uint32_t memorySize();
-    uint8_t zMachineVersion();
-    uint8_t getByte(uint16_t addr);
-    void setByte(uint16_t addr, uint8_t val);
-    uint16_t getWord(uint16_t addr);
+    qint32 memorySize();
+    quint8 zMachineVersion();
+
+    template<typename T>
+    T getInt(quint16 addr)
+    {
+        assertIntType<T>();
+        T val;
+        m_buffer.seek(addr);
+        m_stream >> val;
+        return val;
+    }
+
+    template<typename T>
+    void setInt(quint16 addr, T val)
+    {
+        assertIntType<T>();
+        m_buffer.seek(addr);
+        m_stream << val;
+    }
 
 private:
-    // data storage and manipulation
+    template<typename T>
+    static void assertIntType()
+    {
+        static_assert(std::is_same_v<T, quint8> || std::is_same_v<T, quint16>
+                          || std::is_same_v<T, qint8> || std::is_same_v<T, quint16>,
+                      "T must be quint8, quint16, qint8, or qint16");
+    }
     QByteArray m_bytes;
     QBuffer m_buffer;
     QDataStream m_stream;

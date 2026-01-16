@@ -6,10 +6,11 @@ CONFIG -= app_bundle
 
 TEMPLATE = app
 
-SOURCES +=  tst_parsestoryfileheader.cpp
+SOURCES += \
+	tst_zmachinecore.cpp
 
 INCLUDEPATH += \
-$$PWD/../ZMachineCore
+	$$PWD/../ZMachineCore
 
 LIBS += -L$$OUT_PWD/../ZMachineCore/lib -lZMachineCore
 

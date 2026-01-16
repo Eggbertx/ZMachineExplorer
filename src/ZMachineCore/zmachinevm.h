@@ -17,12 +17,12 @@ public:
 
     QString& lastError();
     QString& filePath();
-    uint32_t fileSize();
+    quint32 fileSize();
 
     enum InterpreterNum interpreterNumber();
     void setInterpreterNum(enum InterpreterNum, bool setInFile = true);
 
-    uint8_t zMachineVersion();
+    quint8 zMachineVersion();
 
 
 private:
