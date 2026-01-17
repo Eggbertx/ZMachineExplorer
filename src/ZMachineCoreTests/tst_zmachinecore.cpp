@@ -20,7 +20,7 @@ private slots:
     void test_parseHeader();
     void test_ZMachineMemory_getInt();
     void test_ZMachineMemory_setInt();
-
+    void test_ZMachineMemory_operationStatus();
 private:
     static constexpr char byteArrayStr[] = "\xab\xcd\x01\x23\xab\xcd\x01\x23";
 };
@@ -79,6 +79,19 @@ void ZMachineCoreTests::test_ZMachineMemory_setInt()
     QCOMPARE(mem.getInt<quint16>(0), 0xfdfd);
 }
 
+void ZMachineCoreTests::test_ZMachineMemory_operationStatus()
+{
+    ZMachineCore::ZMachineMemory mem;
+    QByteArray arr = QByteArray::fromRawData("\xfd\xfd", 2);
+    mem.populate(arr);
+
+    mem.getInt<quint16>(0);
+    QCOMPARE(mem.lastMemoryOperationStatus(), ZMachineCore::MemoryOperationStatus::OK);
+    mem.getInt<quint16>(1);
+    QCOMPARE(mem.lastMemoryOperationStatus(), ZMachineCore::MemoryOperationStatus::OutOfBounds);
+    mem.getInt<quint16>(2);
+    QCOMPARE(mem.lastMemoryOperationStatus(), ZMachineCore::MemoryOperationStatus::OutOfBounds);
+}
 
 
 QTEST_APPLESS_MAIN(ZMachineCoreTests)

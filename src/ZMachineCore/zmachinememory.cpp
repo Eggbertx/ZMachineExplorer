@@ -1,4 +1,3 @@
-#include <type_traits>
 #include "zmachinememory.h"
 
 namespace ZMachineCore {
@@ -22,9 +21,9 @@ qint32 ZMachineMemory::memorySize()
     return m_bytes.size();
 }
 
-quint8 ZMachineMemory::zMachineVersion()
+MemoryOperationStatus ZMachineMemory::lastMemoryOperationStatus()
 {
-    return getInt<quint8>(0);
+    return m_operationStatus;
 }
 
 } // namespace ZMachineCore

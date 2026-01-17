@@ -76,22 +76,39 @@ enum InterpreterNum {
     TandyColor
 };
 
+enum MemoryOperationStatus {
+    OK,
+    OutOfBounds,
+    MemoryNotInitialized,
+    WriteToReadOnlyMemory,
+    UnknownError
+};
+
 class ZMachineMemory
 {
 public:
     ZMachineMemory();
     void populate(QByteArray bytes);
     qint32 memorySize();
-    quint8 zMachineVersion();
 
     template<typename T>
     T getInt(quint16 addr)
     {
         assertIntType<T>();
         T val;
-        m_buffer.seek(addr);
-        m_stream >> val;
-        return val;
+        qsizetype valSize = sizeof(T);
+        if(m_bytes.length() == 0) {
+            m_operationStatus = MemoryOperationStatus::MemoryNotInitialized;
+        } else if (addr + valSize > m_bytes.length()) {
+            m_operationStatus = MemoryOperationStatus::OutOfBounds;
+        } else if (m_buffer.seek(addr)) {
+            m_stream >> val;
+            m_operationStatus = MemoryOperationStatus::OK;
+            return val;
+        } else {
+            m_operationStatus = MemoryOperationStatus::UnknownError;
+        }
+        return 0;
     }
 
     template<typename T>
@@ -101,6 +118,11 @@ public:
         m_buffer.seek(addr);
         m_stream << val;
     }
+
+    MemoryOperationStatus lastMemoryOperationStatus();
+
+protected:
+    MemoryOperationStatus m_operationStatus;
 
 private:
     template<typename T>
