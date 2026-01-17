@@ -1,13 +1,16 @@
 #include "zmachinevm.h"
 #include <QFile>
 
-ZMachineCore::ZMachineVM::ZMachineVM()
+namespace ZMachineCore
+{
+
+ZMachineVM::ZMachineVM()
 {
     m_lastError = "";
     m_filePath = "";
 }
 
-bool ZMachineCore::ZMachineVM::loadFromFile(const QString &filePath)
+bool ZMachineVM::loadFromFile(const QString &filePath)
 {
     QFile storyFile(filePath);
     if (!storyFile.open(QIODevice::ReadOnly)) {
@@ -20,27 +23,27 @@ bool ZMachineCore::ZMachineVM::loadFromFile(const QString &filePath)
     return true;
 }
 
-void ZMachineCore::ZMachineVM::reset()
+void ZMachineVM::reset()
 {
     m_memory.setInt<quint8>(HeaderAddress::InterpreterNum, m_interpreterNum);
 }
 
-QString &ZMachineCore::ZMachineVM::lastError()
+QString &ZMachineVM::lastError()
 {
     return m_lastError;
 }
 
-QString &ZMachineCore::ZMachineVM::filePath()
+QString &ZMachineVM::filePath()
 {
     return m_filePath;
 }
 
-quint32 ZMachineCore::ZMachineVM::fileSize()
+quint32 ZMachineVM::fileSize()
 {
     return m_memory.memorySize();
 }
 
-void ZMachineCore::ZMachineVM::setInterpreterNum(enum InterpreterNum num, bool setInFile)
+void ZMachineVM::setInterpreterNum(enum InterpreterNum num, bool setInFile)
 {
     m_interpreterNum = num;
     if (setInFile && m_memory.memorySize() > 0) {
@@ -48,12 +51,14 @@ void ZMachineCore::ZMachineVM::setInterpreterNum(enum InterpreterNum num, bool s
     }
 }
 
-enum ZMachineCore::InterpreterNum ZMachineCore::ZMachineVM::interpreterNumber()
+enum InterpreterNum ZMachineCore::ZMachineVM::interpreterNumber()
 {
     return m_interpreterNum;
 }
 
-quint8 ZMachineCore::ZMachineVM::zMachineVersion()
+quint8 ZMachineVM::zMachineVersion()
 {
-    return m_memory.zMachineVersion();
+    return m_memory.getInt<quint8>(0);
 }
+
+} // namespace ZMachineCore

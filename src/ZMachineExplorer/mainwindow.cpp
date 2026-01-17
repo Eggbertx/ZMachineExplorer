@@ -81,7 +81,8 @@ void MainWindow::on_fileDialog_accepted(const QString &file)
 
 void MainWindow::on_recentFileSelected(QAction *recentFile)
 {
-    openFile(recentFile->text(), false);
+    if(recentFile != ui->actionClearHistory)
+        openFile(recentFile->text(), false);
 }
 
 void MainWindow::on_actionClearHistory_triggered()
