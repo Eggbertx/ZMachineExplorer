@@ -29,8 +29,8 @@ private slots:
     void on_actionOpenStoryFile_triggered();
     void on_fileDialog_accepted(const QString& filePath);
 	void on_recentFileSelected(QAction* recentFile);
+    void on_interpreterNumberSelected(QAction* numberItem);
 	void on_actionClearHistory_triggered();
-
     void on_actionRestart_triggered();
 
     private:

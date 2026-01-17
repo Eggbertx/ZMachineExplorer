@@ -112,8 +112,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>98</width>
-             <height>28</height>
+             <width>100</width>
+             <height>30</height>
             </rect>
            </property>
            <attribute name="label">
@@ -213,7 +213,30 @@
     <addaction name="separator"/>
     <addaction name="actionQuit"/>
    </widget>
+   <widget class="QMenu" name="menuDebug">
+    <property name="title">
+     <string>Debug</string>
+    </property>
+    <widget class="QMenu" name="menuInterpreterNumber">
+     <property name="title">
+      <string>Interpreter Number</string>
+     </property>
+     <addaction name="actionDECSystem20"/>
+     <addaction name="actionAppleIIe"/>
+     <addaction name="actionMacintosh"/>
+     <addaction name="actionAmiga"/>
+     <addaction name="actionAtariST"/>
+     <addaction name="actionIBMPC"/>
+     <addaction name="actionCommodore128"/>
+     <addaction name="actionCommodore64"/>
+     <addaction name="actionAppleIIc"/>
+     <addaction name="actionAppleIIgs"/>
+     <addaction name="actionTandyColor"/>
+    </widget>
+    <addaction name="menuInterpreterNumber"/>
+   </widget>
    <addaction name="menuGame"/>
+   <addaction name="menuDebug"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionOpenStoryFile">
@@ -237,6 +260,94 @@
    </property>
    <property name="text">
     <string>Restart</string>
+   </property>
+  </action>
+  <action name="actionDECSystem20">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>DECSystem-20</string>
+   </property>
+  </action>
+  <action name="actionAppleIIe">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Apple IIe</string>
+   </property>
+  </action>
+  <action name="actionMacintosh">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Macintosh</string>
+   </property>
+  </action>
+  <action name="actionAmiga">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Amiga</string>
+   </property>
+  </action>
+  <action name="actionAtariST">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Atari ST</string>
+   </property>
+  </action>
+  <action name="actionIBMPC">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>IBM PC</string>
+   </property>
+  </action>
+  <action name="actionCommodore128">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Commodore 128</string>
+   </property>
+  </action>
+  <action name="actionCommodore64">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Commodore 64</string>
+   </property>
+  </action>
+  <action name="actionAppleIIc">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Apple IIc</string>
+   </property>
+  </action>
+  <action name="actionAppleIIgs">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Apple IIgs</string>
+   </property>
+  </action>
+  <action name="actionTandyColor">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Tandy Color</string>
    </property>
   </action>
  </widget>
