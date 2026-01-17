@@ -21,10 +21,10 @@ enum HeaderAddress {
     Checksum = 0x1c,
     InterpreterNum = 0x1e,
     InterpreterRev,
-    HeightLines,
-    WidthChars,
-    WidthUnits,
-    HeightUnits = 0x24,
+    ScreenHeightLines,
+    ScreenWidthChars,
+    ScreenWidthUnits,
+    ScreenHeightUnits = 0x24,
     FontWidth = 0x26,
     FontHeight,
     RoutinesOffset,
@@ -75,6 +75,38 @@ enum InterpreterNum {
     TandyColor
 };
 
+enum MemoryRegionType {
+    UnknownMemory,
+    DynamicMemory, // [0, StaticAddr)
+    StaticMemory, // [StaticAddr, HighMemoryBase)
+    HighMemory // [HighMemoryBase, end)
+};
+
+enum MemoryWriteSource {
+    UnknownSource,
+    StorySource,
+    InterpreterSource,
+    ResetSource
+};
+
+enum ColourCode {
+    PixelUnderCursor = -1,
+    Current,
+    Default,
+    Black,
+    Red,
+    Green,
+    Yellow,
+    Blue,
+    Magenta,
+    Cyan,
+    White,
+    LightGrey,
+    MediumGrey,
+    DarkGrey,
+    Transparent = 15
+};
+
 class ZMachineVM : public ZMachineMemory
 {
 public:
@@ -88,12 +120,23 @@ public:
     quint32 fileSize();
 
     enum InterpreterNum interpreterNumber();
-    void setInterpreterNum(enum InterpreterNum, bool setInFile = true);
-
+    void setInterpreterNum(enum InterpreterNum, bool setInFile = true, bool isReset = false);
     quint8 zMachineVersion();
 
-
+    template<typename T>
+    void setInt(quint16 addr, T val, enum MemoryWriteSource source)
+    {
+        assertIntType<T>();
+        if(validateMemoryWrite(addr, source)) {
+            ZMachineMemory::setInt<T>(addr, val);
+        } else {
+            m_operationStatus = MemoryOperationStatus::WriteToReadOnlyMemory;
+        }
+    }
 private:
+    bool validateMemoryWrite(quint16 addr, enum MemoryWriteSource source);
+    bool validateHeaderWrite(quint16 addr, enum MemoryWriteSource source);
+    enum MemoryRegionType memoryRegion(quint16 addr);
     QString m_lastError;
     QString m_filePath;
     enum InterpreterNum m_interpreterNum = InterpreterNum::IBMPC;
