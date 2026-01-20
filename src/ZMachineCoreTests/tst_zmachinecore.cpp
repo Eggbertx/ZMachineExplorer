@@ -53,8 +53,8 @@ void ZMachineCoreTests::test_parseHeader()
 {
     ZMachineCore::ZMachineVM vm;
     QCOMPARE(vm.filePath(), "");
-    QVERIFY(vm.loadFromFile("testdata/test.z5"));
-    QCOMPARE(vm.filePath(), "testdata/test.z5");
+    QVERIFY(vm.loadFromFile(":/testdata/test.z5"));
+    QCOMPARE(vm.filePath(), ":/testdata/test.z5");
     QCOMPARE(vm.lastError(), "");
     QCOMPARE(vm.fileSize(), 86528);
     QCOMPARE(vm.zMachineVersion(), 5);
