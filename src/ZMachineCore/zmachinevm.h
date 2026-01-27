@@ -107,6 +107,14 @@ enum ColourCode {
     Transparent = 15
 };
 
+typedef struct {
+    quint8 flags[6];
+    quint16 parent;
+    quint16 sibling;
+    quint16 child;
+    quint16 properties;
+} zobject_header;
+
 class ZMachineVM : public ZMachineMemory
 {
 public:
@@ -137,6 +145,9 @@ private:
     bool validateMemoryWrite(quint16 addr, enum MemoryWriteSource source);
     bool validateHeaderWrite(quint16 addr, enum MemoryWriteSource source);
     enum MemoryRegionType memoryRegion(quint16 addr);
+    QList<zobject_header>& getObjectList();
+
+    QList<zobject_header> m_objectList;
     QString m_lastError;
     QString m_filePath;
     enum InterpreterNum m_interpreterNum = InterpreterNum::IBMPC;

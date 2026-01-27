@@ -160,4 +160,63 @@ MemoryRegionType ZMachineVM::memoryRegion(quint16 addr)
     return MemoryRegionType::HighMemory;
 }
 
+QList<zobject_header> &ZMachineVM::getObjectList()
+{
+    if (m_objectList.length() > 0) {
+        return m_objectList;
+    }
+    quint8 version = zMachineVersion();
+    if (m_operationStatus != MemoryOperationStatus::OK)
+        return m_objectList;
+
+    quint16 objAddr = getInt<quint16>(HeaderAddress::ObjectsAddr);
+    if (m_operationStatus != MemoryOperationStatus::OK)
+        return m_objectList;
+
+    int maxObjects, numFlags;
+    if (version < 4) {
+        maxObjects = 255;
+        numFlags = 4;
+    } else {
+        maxObjects = 65535;
+        numFlags = 6;
+    }
+    for(int i = 0; i < maxObjects; i++) {
+        zobject_header header;
+        for(int f = 0; f < numFlags; f++) {
+            header.flags[f] = getInt<quint8>(objAddr++);
+            if(m_operationStatus != MemoryOperationStatus::OK)
+                return m_objectList;
+        }
+        if(version < 4) {
+            header.parent = getInt<quint8>(objAddr++);
+            if(m_operationStatus != MemoryOperationStatus::OK)
+                return m_objectList;
+            header.parent = getInt<quint8>(objAddr++);
+            if(m_operationStatus != MemoryOperationStatus::OK)
+                return m_objectList;
+            header.parent = getInt<quint8>(objAddr++);
+            if(m_operationStatus != MemoryOperationStatus::OK)
+                return m_objectList;
+        } else {
+            header.parent = getInt<quint16>(objAddr);
+            if(m_operationStatus != MemoryOperationStatus::OK)
+                return m_objectList;
+            header.sibling = getInt<quint16>(objAddr+2);
+            if(m_operationStatus != MemoryOperationStatus::OK)
+                return m_objectList;
+            header.child = getInt<quint16>(objAddr+4);
+            if(m_operationStatus != MemoryOperationStatus::OK)
+                return m_objectList;
+            objAddr += 6;
+        }
+        header.properties = getInt<quint16>(objAddr++);
+        if(m_operationStatus != MemoryOperationStatus::OK)
+            return m_objectList;
+
+    }
+
+    return m_objectList;
+}
+
 } // namespace ZMachineCore
