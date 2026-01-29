@@ -58,6 +58,7 @@ void MainWindow::openFile(QString file, bool addToRecent)
 
     ui->actionRestart->setEnabled(true);
     ui->menuDebug->setEnabled(true);
+    ui->btnUpdateObjects->setEnabled(true);
 }
 
 void MainWindow::clearRecentFiles()

@@ -197,7 +197,7 @@ QList<zobject_header> &ZMachineVM::getObjectList()
         zobject_header header;
         if(objAddr >= propertyTableMin) {
             // object table ends where property table begins
-            qInfo("Reached property table, number of objects: %d", numObjects());
+            // qDebug("Reached property table, number of objects: %d", numObjects());
             break;
         }
         for(int f = 0; f < numFlags; f++) {
@@ -227,13 +227,16 @@ QList<zobject_header> &ZMachineVM::getObjectList()
                 return m_objectList;
             objAddr += 6;
         }
-        header.properties = getInt<quint16>(objAddr++);
+        header.properties = getInt<quint16>(objAddr);
         if(m_operationStatus != MemoryOperationStatus::OK)
             return m_objectList;
+        objAddr += 2;
         if(header.properties < propertyTableMin) {
             propertyTableMin = header.properties;
         }
-        qDebug("Object %d\n\tParent: %d\n\tSibling: %d\n\tChild: %d\n\tProperties: %d\n\n", i, header.parent, header.sibling, header.child, header.properties);
+        // qDebug(
+        //     "Object %d at %x\n\tParent: %d\n\tSibling: %d\n\tChild: %d\n\tProperties: %d\n\n",
+        //     i, objAddr, header.parent, header.sibling, header.child, header.properties);
         m_objectList.append(header);
     }
 
