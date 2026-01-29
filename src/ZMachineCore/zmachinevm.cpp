@@ -173,16 +173,33 @@ QList<zobject_header> &ZMachineVM::getObjectList()
     if (m_operationStatus != MemoryOperationStatus::OK)
         return m_objectList;
 
-    int maxObjects, numFlags;
+    quint16 maxObjects;
+    quint8 numFlags;
+    quint16 propertyTableMin = 65535;
+    quint16 firstObjectAddr;
     if (version < 4) {
         maxObjects = 255;
         numFlags = 4;
+        firstObjectAddr = objAddr + 31 * 2; // temporarily skipping the default properties table
     } else {
         maxObjects = 65535;
         numFlags = 6;
+        firstObjectAddr = objAddr + 63 * 2;
+    }
+    while(objAddr < firstObjectAddr) {
+        quint16 w = getInt<quint16>(objAddr);
+        if(m_operationStatus != MemoryOperationStatus::OK)
+            return m_objectList;
+        m_defaultProperties.append(w);
+        objAddr += 2;
     }
     for(int i = 0; i < maxObjects; i++) {
         zobject_header header;
+        if(objAddr >= propertyTableMin) {
+            // object table ends where property table begins
+            qInfo("Reached property table, number of objects: %d", numObjects());
+            break;
+        }
         for(int f = 0; f < numFlags; f++) {
             header.flags[f] = getInt<quint8>(objAddr++);
             if(m_operationStatus != MemoryOperationStatus::OK)
@@ -213,7 +230,11 @@ QList<zobject_header> &ZMachineVM::getObjectList()
         header.properties = getInt<quint16>(objAddr++);
         if(m_operationStatus != MemoryOperationStatus::OK)
             return m_objectList;
-
+        if(header.properties < propertyTableMin) {
+            propertyTableMin = header.properties;
+        }
+        qDebug("Object %d\n\tParent: %d\n\tSibling: %d\n\tChild: %d\n\tProperties: %d\n\n", i, header.parent, header.sibling, header.child, header.properties);
+        m_objectList.append(header);
     }
 
     return m_objectList;

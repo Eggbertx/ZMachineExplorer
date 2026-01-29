@@ -33,7 +33,9 @@ private slots:
 	void on_actionClearHistory_triggered();
     void on_actionRestart_triggered();
 
-    private:
+    void on_btnUpdateObjects_clicked();
+
+private:
     Ui::MainWindow *ui;
     QFileDialog* m_fileDialog;
     ZMachineCore::ZMachineVM m_vm;

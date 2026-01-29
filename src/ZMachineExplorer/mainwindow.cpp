@@ -133,3 +133,7 @@ void MainWindow::on_actionClearHistory_triggered()
 }
 
 void MainWindow::on_actionRestart_triggered() {}
+
+void MainWindow::on_btnUpdateObjects_clicked() {
+    m_vm.getObjectList();
+}

@@ -141,12 +141,15 @@ public:
             m_operationStatus = MemoryOperationStatus::WriteToReadOnlyMemory;
         }
     }
+
+    QList<zobject_header>& getObjectList();
+    int numObjects() { return m_objectList.length(); }
 private:
     bool validateMemoryWrite(quint16 addr, enum MemoryWriteSource source);
     bool validateHeaderWrite(quint16 addr, enum MemoryWriteSource source);
     enum MemoryRegionType memoryRegion(quint16 addr);
-    QList<zobject_header>& getObjectList();
 
+    QList<quint16> m_defaultProperties;
     QList<zobject_header> m_objectList;
     QString m_lastError;
     QString m_filePath;
