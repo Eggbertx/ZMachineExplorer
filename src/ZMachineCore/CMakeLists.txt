@@ -17,6 +17,7 @@ add_library(ZMachineCore SHARED
   zmachinevm.h
   zmachinememory.cpp
   zmachinememory.h
+  zobject.h zobject.cpp
 )
 
 target_link_libraries(ZMachineCore PRIVATE Qt${QT_VERSION_MAJOR}::Core)

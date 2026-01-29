@@ -3,6 +3,7 @@
 #include <QString>
 
 #include "zmachinememory.h"
+#include "zobject.h"
 
 namespace ZMachineCore {
 
@@ -78,16 +79,11 @@ enum InterpreterNum {
 enum MemoryRegionType {
     UnknownMemory,
     DynamicMemory, // [0, StaticAddr)
-    StaticMemory, // [StaticAddr, HighMemoryBase)
-    HighMemory // [HighMemoryBase, end)
+    StaticMemory,  // [StaticAddr, HighMemoryBase)
+    HighMemory     // [HighMemoryBase, end)
 };
 
-enum MemoryWriteSource {
-    UnknownSource,
-    StorySource,
-    InterpreterSource,
-    ResetSource
-};
+enum MemoryWriteSource { UnknownSource, StorySource, InterpreterSource, ResetSource };
 
 enum ColourCode {
     PixelUnderCursor = -1,
@@ -107,24 +103,16 @@ enum ColourCode {
     Transparent = 15
 };
 
-typedef struct {
-    quint8 flags[6];
-    quint16 parent;
-    quint16 sibling;
-    quint16 child;
-    quint16 properties;
-} zobject_header;
-
 class ZMachineVM : public ZMachineMemory
 {
 public:
     ZMachineVM();
 
-    bool loadFromFile(const QString& filePath);
+    bool loadFromFile(const QString &filePath);
     void reset();
 
-    QString& lastError();
-    QString& filePath();
+    QString &lastError();
+    QString &filePath();
     quint32 fileSize();
 
     enum InterpreterNum interpreterNumber();
@@ -135,15 +123,16 @@ public:
     void setInt(quint16 addr, T val, enum MemoryWriteSource source)
     {
         assertIntType<T>();
-        if(validateMemoryWrite(addr, source)) {
+        if (validateMemoryWrite(addr, source)) {
             ZMachineMemory::setInt<T>(addr, val);
         } else {
             m_operationStatus = MemoryOperationStatus::WriteToReadOnlyMemory;
         }
     }
 
-    QList<zobject_header>& getObjectList();
+    QList<zobject_header> &getObjectList();
     int numObjects() { return m_objectList.length(); }
+
 private:
     bool validateMemoryWrite(quint16 addr, enum MemoryWriteSource source);
     bool validateHeaderWrite(quint16 addr, enum MemoryWriteSource source);
@@ -156,6 +145,6 @@ private:
     enum InterpreterNum m_interpreterNum = InterpreterNum::IBMPC;
 };
 
-}
+} // namespace ZMachineCore
 
 #endif // ZMACHINEVM_H
