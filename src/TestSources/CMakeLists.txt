@@ -19,7 +19,7 @@ foreach(INF_FILE ${INFORM_SOURCES})
         VERBATIM
     )
     make_directory(${OUTPUT_DIR})
-    configure_file(${INF_FILE} "${OUTPUT_DIR}/${OUT_FILE}" COPYONLY)
+    configure_file(${OUT_FILE} "${OUTPUT_DIR}/${OUT_FILE}" COPYONLY)
     list(APPEND COMPILED_STORIES ${OUT_FILE})
 endforeach()
 

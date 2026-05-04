@@ -29,6 +29,7 @@ ui_*.h
 *.jsc
 Makefile*
 *build-*
+/build*
 *.qm
 *.prl
 
@@ -37,6 +38,7 @@ target_wrapper.*
 
 # QtCreator
 *.autosave
+.qt*
 
 # QtCreator Qml
 *.qmlproject.user
@@ -53,7 +55,7 @@ compile_commands.json
 
 *_qmlcache.qrc
 
-/build*
 /.vscode
-.qt/
-/src/ZMachineCoreTests/testdata/
+
+# Test story files
+*.z[1-8]
