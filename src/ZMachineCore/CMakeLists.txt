@@ -18,6 +18,8 @@ add_library(ZMachineCore SHARED
   zmachinememory.cpp
   zmachinememory.h
   zobject.h zobject.cpp
+  zmachinevm_instructions.cpp
+  unhandledopcodeexception.h unhandledopcodeexception.cpp
 )
 
 target_link_libraries(ZMachineCore PRIVATE Qt${QT_VERSION_MAJOR}::Core)

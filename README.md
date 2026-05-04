@@ -1,5 +1,5 @@
 # Z-Machine Explorer
-This is a Z-Machine interpreter designed to act as a debugging/development tool. It is currently a work in progress.
+This is a Z-Machine interpreter designed to act as a debugging/development tool. It is currently a work in progress and can't do much in the way of interpreting or debugging yet.
 
-## Test data
-All test files are stored in [src/ZMachineCoreTests/testdata/](./src/ZMachineCoreTests/testdata/), including both the compiled Z-Machines and the corresponding source code, which can be compiled with [Inform 6](https://inform-fiction.org/)
+## Tests
+The tests are written in [Inform 6](https://inform-fiction.org/), which is required in order to compile the story files used for testing the interpreter.
