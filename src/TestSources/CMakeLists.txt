@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.16)
 
 project(TestSources)
 
-set(OUTPUT_DIR "${CMAKE_CURRENT_BINARY_DIR}/../ZMachineCoreTests/testdata")
+set(OUTPUT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../ZMachineCoreTests/testdata")
 
 file(GLOB INFORM_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/*.inf")
 
@@ -18,6 +18,7 @@ foreach(INF_FILE ${INFORM_SOURCES})
         COMMENT "Compiling ${INF_FILE} -> ${OUT_FILE}"
         VERBATIM
     )
+    make_directory(${OUTPUT_DIR})
     configure_file(${INF_FILE} "${OUTPUT_DIR}/${OUT_FILE}" COPYONLY)
     list(APPEND COMPILED_STORIES ${OUT_FILE})
 endforeach()
