@@ -1,5 +1,7 @@
 #include "zmachinevm.h"
+#include <QException>
 #include <QFile>
+#include "unhandledopcodeexception.h"
 
 namespace ZMachineCore {
 
@@ -7,6 +9,7 @@ ZMachineVM::ZMachineVM()
 {
     m_lastError = "";
     m_filePath = "";
+    defineInstructions();
 }
 
 bool ZMachineVM::loadFromFile(const QString &filePath)
@@ -19,12 +22,14 @@ bool ZMachineVM::loadFromFile(const QString &filePath)
     populate(storyFile.readAll());
     storyFile.close();
     m_filePath = filePath;
+    reset();
     return true;
 }
 
 void ZMachineVM::reset()
 {
     setInt<quint8>(HeaderAddress::InterpreterNum, m_interpreterNum, MemoryWriteSource::ResetSource);
+    m_PC = getInt<quint16>(HeaderAddress::InitialPC);
 }
 
 QString &ZMachineVM::lastError()
@@ -244,6 +249,35 @@ QList<zobject_header> &ZMachineVM::getObjectList()
     }
 
     return m_objectList;
+}
+
+void ZMachineVM::defineInstructions()
+{
+    REGISTER_INSTRUCTION(0xb0, implRTrue_V1, 1, 0);
+    REGISTER_INSTRUCTION(0xb1, implRFalse_V1, 1, 0);
+    REGISTER_INSTRUCTION(0xba, implQuit_V1, 1, 0);
+    REGISTER_INSTRUCTION(0xbe, implPrintRet_V1, 1, 0);
+    REGISTER_INSTRUCTION(0xe0, implCallVS_V4, 4, 0);
+}
+
+void ZMachineVM::executeInstruction(quint8 opcode, const QList<quint16>& args, int version)
+{
+    auto it = m_instructions.find(opcode);
+    if (it != m_instructions.end()) {
+        const QList<InstructionEntry>& entries = it.value();
+        quint8 version = zMachineVersion();
+        for (const InstructionEntry& entry : entries) {
+            if(version >= entry.minVersion && (entry.maxVersion < 0 || version <= entry.maxVersion)) {
+                entry.fn(*this, args);
+            }
+        }
+    }
+    throw UnhandledOpcodeException(opcode, zMachineVersion());
+}
+
+void ZMachineVM::executeInstruction()
+{
+
 }
 
 } // namespace ZMachineCore

@@ -1,9 +1,18 @@
 #ifndef ZMACHINEVM_H
 #define ZMACHINEVM_H
+
+#include <QHash>
 #include <QString>
 
 #include "zmachinememory.h"
 #include "zobject.h"
+
+#define REGISTER_INSTRUCTION(opcode, method, minVersion, maxVersion) \
+    m_instructions[opcode].append({ \
+        [this](ZMachineVM& vm, const QList<quint16>& args) { method(args); }, \
+        minVersion, \
+        maxVersion \
+    })
 
 namespace ZMachineCore {
 
@@ -118,6 +127,8 @@ public:
     enum InterpreterNum interpreterNumber();
     void setInterpreterNum(enum InterpreterNum, bool setInFile = true, bool isReset = false);
     quint8 zMachineVersion();
+    quint16 pc() { return m_PC; }
+    void setPC(quint16 newPC) { m_PC = newPC; }
 
     template<typename T>
     void setInt(quint16 addr, T val, enum MemoryWriteSource source)
@@ -134,6 +145,8 @@ public:
     int numObjects() { return m_objectList.length(); }
 
 private:
+    using InstructionImplFunc = std::function<void(ZMachineVM&, const QList<quint16>&)>;
+
     bool validateMemoryWrite(quint16 addr, enum MemoryWriteSource source);
     bool validateHeaderWrite(quint16 addr, enum MemoryWriteSource source);
     enum MemoryRegionType memoryRegion(quint16 addr);
@@ -143,6 +156,31 @@ private:
     QString m_lastError;
     QString m_filePath;
     enum InterpreterNum m_interpreterNum = InterpreterNum::IBMPC;
+
+    struct InstructionEntry {
+        InstructionImplFunc fn;
+        int minVersion;
+        int maxVersion;
+    };
+
+    quint16 m_PC = 0;
+    QHash<quint8, QList<InstructionEntry>> m_instructions; // stored as opcode -> [list of implementations, in ascending order by minimum version]
+    void defineInstructions();
+    void executeInstruction(quint8 opcode, const QList<quint16>& args, int version);
+    void executeInstruction();
+
+    // Instruction implementations
+    // V1
+    void implRTrue_V1(const QList<quint16>& args);
+    void implRFalse_V1(const QList<quint16>& args);
+    void implPrintRet_V1(const QList<quint16>& args);
+    void implQuit_V1(const QList<quint16>& args);
+    // V2
+    // V3
+    // V4
+    void implCallVS_V4(const QList<quint16>& args);
+    // V5
+    // V6
 };
 
 } // namespace ZMachineCore
