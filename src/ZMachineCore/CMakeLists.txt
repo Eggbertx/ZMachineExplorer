@@ -17,6 +17,7 @@ add_library(ZMachineCore SHARED
   zmachinevm.h
   zmachinememory.cpp
   zmachinememory.h
+  enums.h
   zobject.h zobject.cpp
   zmachinevm_instructions.cpp
   unhandledopcodeexception.h unhandledopcodeexception.cpp
