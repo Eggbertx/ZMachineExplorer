@@ -20,7 +20,7 @@ add_library(ZMachineCore SHARED
   enums.h
   zobject.h zobject.cpp
   zmachinevm_instructions.cpp
-  unhandledopcodeexception.h unhandledopcodeexception.cpp
+  illegalopcodeexception.h illegalopcodeexception.cpp
 )
 
 target_link_libraries(ZMachineCore PRIVATE Qt${QT_VERSION_MAJOR}::Core)

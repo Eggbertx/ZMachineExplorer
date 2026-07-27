@@ -21,6 +21,7 @@ private slots:
     void test_ZMachineMemory_operationStatus();
     void test_ZObject_getFlag();
     void test_ZObject_setFlag();
+    void test_ZMachineVM_decodeInstruction();
 
 private:
     static constexpr char byteArrayStr[] = "\xab\xcd\x01\x23\xab\xcd\x01\x23";
@@ -68,7 +69,7 @@ void ZMachineCoreTests::test_parseHeader()
     QVERIFY(vm.loadFromFile(":/testdata/test.z5"));
     QCOMPARE(vm.filePath(), ":/testdata/test.z5");
     QCOMPARE(vm.lastError(), "");
-    QCOMPARE(vm.fileSize(), 86528);
+    QCOMPARE(vm.fileSize(), 172544);
     QCOMPARE(vm.zMachineVersion(), 5);
 }
 
@@ -133,6 +134,35 @@ void ZMachineCoreTests::test_ZObject_setFlag()
     QVERIFY(obj.getAttribute(27));
     obj.setAttribute(27, false);
     QVERIFY(!obj.getAttribute(27));
+}
+
+void ZMachineCoreTests::test_ZMachineVM_decodeInstruction()
+{
+    using namespace ZMachineCore;
+    ZMachineVM vm;
+    QVERIFY(vm.loadFromFile(":/testdata/test.z5"));
+    // short form, 0OP (quit)
+    vm.setInt<quint8>(0x10, 0xba, MemoryWriteSource::TestSource);
+    InstructionData decoded = vm.decodeInstruction(0x10);
+    QCOMPARE(decoded.form, InstructionForm::ShortForm);
+    QCOMPARE(decoded.opcode, 10);
+    QCOMPARE(decoded.operandCount, 0);
+    QCOMPARE(decoded.operandTypes.count(), 0);
+
+    // short form, 1OP
+
+
+    // long form
+
+
+    // variable form, 2OP
+
+
+    // variable form, VAR
+
+
+    // extended form
+
 }
 
 QTEST_APPLESS_MAIN(ZMachineCoreTests)

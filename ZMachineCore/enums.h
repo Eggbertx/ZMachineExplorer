@@ -76,7 +76,7 @@ enum MemoryRegionType {
     HighMemory     // [HighMemoryBase, end)
 };
 
-enum MemoryWriteSource { UnknownSource, StorySource, InterpreterSource, ResetSource };
+enum MemoryWriteSource { UnknownSource, StorySource, InterpreterSource, ResetSource, TestSource };
 
 enum ColourCode {
     PixelUnderCursor = -1,
@@ -95,5 +95,20 @@ enum ColourCode {
     DarkGrey,
     Transparent = 15
 };
+
+enum OperandType {
+    LargeConstant,
+    SmallConstant,
+    VariableOperand,
+    OmittedOperand
+};
+
+enum InstructionForm {
+    LongForm,
+    ExtendedForm,
+    ShortForm,
+    VariableForm
+};
+
 
 } // namespace ZMachineCore

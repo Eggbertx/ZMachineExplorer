@@ -1,7 +1,7 @@
 #include "zmachinevm.h"
 #include <QException>
 #include <QFile>
-#include "unhandledopcodeexception.h"
+#include "illegalopcodeexception.h"
 
 namespace ZMachineCore {
 
@@ -21,6 +21,14 @@ bool ZMachineVM::loadFromFile(const QString &filePath)
     }
     populate(storyFile.readAll());
     storyFile.close();
+    m_filePath = filePath;
+    reset();
+    return true;
+}
+
+bool ZMachineVM::loadFromBytes(QByteArray bytes, QString filePath)
+{
+    populate(bytes);
     m_filePath = filePath;
     reset();
     return true;
@@ -253,31 +261,94 @@ QList<zobject_header> &ZMachineVM::getObjectList()
 
 void ZMachineVM::defineInstructions()
 {
-    REGISTER_INSTRUCTION(0xb0, implRTrue_V1, 1, 0);
-    REGISTER_INSTRUCTION(0xb1, implRFalse_V1, 1, 0);
-    REGISTER_INSTRUCTION(0xba, implQuit_V1, 1, 0);
-    REGISTER_INSTRUCTION(0xbe, implPrintRet_V1, 1, 0);
-    REGISTER_INSTRUCTION(0xe0, implCallVS_V4, 4, 0);
+    REGISTER_INSTRUCTION(0xb0, implRTrue, 1, 0);
+    REGISTER_INSTRUCTION(0xb1, implRFalse, 1, 0);
+    REGISTER_INSTRUCTION(0xba, implQuit, 1, 0);
+    REGISTER_INSTRUCTION(0xbe, implPrintRet, 1, 0);
+    REGISTER_INSTRUCTION(0xe0, implCallVS, 4, 0);
 }
 
-void ZMachineVM::executeInstruction(quint8 opcode, const QList<quint16>& args, int version)
+void ZMachineVM::executeInstruction(quint8 opcode)
 {
     auto it = m_instructions.find(opcode);
     if (it != m_instructions.end()) {
-        const QList<InstructionEntry>& entries = it.value();
+        const InstructionEntry& entry = it.value();
+        QList<quint16> args; // TODO: decode arguments to be passed to function
         quint8 version = zMachineVersion();
-        for (const InstructionEntry& entry : entries) {
-            if(version >= entry.minVersion && (entry.maxVersion < 0 || version <= entry.maxVersion)) {
-                entry.fn(*this, args);
-            }
+        if(version >= entry.minVersion && (entry.maxVersion < 0 || version <= entry.maxVersion)) {
+            // Originally was going to have each instruction implementation named _V<version>, for instructions with different possible effects.
+            // Now implementation handles this
+            entry.fn(*this, args);
         }
     }
-    throw UnhandledOpcodeException(opcode, zMachineVersion());
+    throw IllegalOpcodeException(opcode, "", zMachineVersion());
 }
 
 void ZMachineVM::executeInstruction()
 {
 
+}
+
+InstructionData ZMachineVM::decodeInstruction(quint8 address)
+{
+    InstructionData data;
+
+    quint8 byteVal = getInt<quint8>(address);
+    if(address == 0xbe) {
+        data.form = InstructionForm::ExtendedForm;
+        data.opcode = getInt<quint8>(address + 1);
+        data.operandCount = 4;
+    } else {
+        switch((byteVal & 0b11000000) >> 6) {
+        case 2:
+            data.form = InstructionForm::ShortForm;
+            data.opcode = byteVal & 0xf;
+            if((byteVal & 0b110000) == 0) {
+                data.operandCount = 1;
+                data.operandTypes.resize(1);
+                data.operandTypes[0] = static_cast<OperandType>((byteVal >> 4) & 0b11);
+            } else {
+                data.operandCount = 0;
+            }
+            break;
+        case 3:
+            data.form = InstructionForm::VariableForm;
+            data.opcode = byteVal & 0xf;
+            if(data.opcode == 12 || data.opcode == 26) {
+                // call_vn2, call_vs2 can both take up to 8 operands
+                data.operandCount = 8;
+            } else if((byteVal & 0b100000) == 0) {
+                data.operandCount = 2;
+            } else {
+                data.operandCount = 4;
+            }
+            break;
+        default:
+            // 0xxxxxxx
+            data.form = InstructionForm::LongForm;
+            data.operandCount = 2;
+            data.opcode = byteVal & 0b11111;
+            data.operandTypes.resize(2);
+            data.operandTypes[0] = ((byteVal & 0b1000000 ) == 0)? OperandType::SmallConstant : OperandType::VariableOperand;
+            data.operandTypes[1] = ((byteVal & 0b100000 ) == 0)? OperandType::SmallConstant : OperandType::VariableOperand;
+        }
+    }
+
+    if(data.operandCount >= 4) {
+        int start = (data.operandCount == 8)?14:6;
+        quint16 types = getInt<quint16>(address + 2);
+        OperandType type;
+        for(int i = start; i >= 0; i -= 2) {
+            type = static_cast<OperandType>(types & (0b11 << i));
+            if(type == OperandType::OmittedOperand) {
+                data.operandCount = data.operandTypes.count();
+                break;
+            }
+            data.operandTypes.append(type);
+        }
+    }
+
+    return data;
 }
 
 } // namespace ZMachineCore

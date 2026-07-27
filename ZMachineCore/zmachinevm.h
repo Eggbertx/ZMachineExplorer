@@ -10,15 +10,23 @@
 #include "zobject.h"
 
 #define REGISTER_INSTRUCTION(opcode, method, minVersion, maxVersion) \
-    m_instructions[opcode].append({ \
+    m_instructions[opcode] = { \
         [this](ZMachineVM& vm, const QList<quint16>& args) { method(args); }, \
         minVersion, \
         maxVersion \
-    })
+    }
 
 #define STACK_SIZE 1024
 
 namespace ZMachineCore {
+
+typedef struct {
+    InstructionForm form;
+    quint8 types;
+    quint8 operandCount;
+    quint8 opcode;
+    QList<OperandType> operandTypes;
+} InstructionData;
 
 class ZMachineVM : public ZMachineMemory
 {
@@ -26,6 +34,7 @@ public:
     ZMachineVM();
 
     bool loadFromFile(const QString &filePath);
+    bool loadFromBytes(QByteArray bytes, QString filePath);
     void reset();
 
     QString &lastError();
@@ -42,7 +51,7 @@ public:
     void setInt(quint16 addr, T val, enum MemoryWriteSource source)
     {
         assertIntType<T>();
-        if (validateMemoryWrite(addr, source)) {
+        if (source == MemoryWriteSource::TestSource || validateMemoryWrite(addr, source)) {
             ZMachineMemory::setInt<T>(addr, val);
         } else {
             m_operationStatus = MemoryOperationStatus::WriteToReadOnlyMemory;
@@ -51,6 +60,8 @@ public:
 
     QList<zobject_header> &getObjectList();
     int numObjects() { return m_objectList.length(); }
+
+    InstructionData decodeInstruction(quint8 address);
 
 private:
     using InstructionImplFunc = std::function<void(ZMachineVM&, const QList<quint16>&)>;
@@ -65,28 +76,28 @@ private:
     QString m_filePath;
     enum InterpreterNum m_interpreterNum = InterpreterNum::IBMPC;
 
-    struct InstructionEntry {
+    typedef struct {
         InstructionImplFunc fn;
         int minVersion;
         int maxVersion;
-    };
+    } InstructionEntry;
 
     quint16 m_PC = 0;
-    QHash<quint8, QList<InstructionEntry>> m_instructions; // stored as opcode -> [list of implementations, in ascending order by minimum version]
+    QHash<quint8, InstructionEntry> m_instructions; // stored as opcode -> [list of implementations, in ascending order by minimum version]
     void defineInstructions();
-    void executeInstruction(quint8 opcode, const QList<quint16>& args, int version);
+    void executeInstruction(quint8 opcode);
     void executeInstruction();
 
     // Instruction implementations
     // V1
-    void implRTrue_V1(const QList<quint16>& args);
-    void implRFalse_V1(const QList<quint16>& args);
-    void implPrintRet_V1(const QList<quint16>& args);
-    void implQuit_V1(const QList<quint16>& args);
+    void implRTrue(const QList<quint16>& args);
+    void implRFalse(const QList<quint16>& args);
+    void implPrintRet(const QList<quint16>& args);
+    void implQuit(const QList<quint16>& args);
     // V2
     // V3
     // V4
-    void implCallVS_V4(const QList<quint16>& args);
+    void implCallVS(const QList<quint16>& args);
     // V5
     // V6
 };

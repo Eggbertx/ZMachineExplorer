@@ -1,0 +1,16 @@
+Zcharacter table +
+	'@{00A1}'	! ¡
+	'@{03BB}'	! λ, doesn't display in sfrotz but shows up with ncurses frotz
+	'@{4f60}'
+	'@{597d}'
+	'@{4e16}'
+	'@{754c}'
+	'@{ff01}'
+;
+
+[ Main;
+	print "Hello world!^";
+	print "¡Hola Mundo!^";
+	print "你好世界！^";
+	print "λ";
+];

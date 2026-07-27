@@ -13,7 +13,7 @@ foreach(INF_FILE ${INFORM_SOURCES})
     set(OUT_FILE "${FILENAME_NO_EXT}.z${ZMACHINE_VERSION}")
     add_custom_command(
         OUTPUT ${OUT_FILE}
-        COMMAND inform -v${ZMACHINE_VERSION} ${INF_FILE}
+        COMMAND inform -v${ZMACHINE_VERSION} -Cu ${INF_FILE}
         DEPENDS ${INF_FILE}
         COMMENT "Compiling ${INF_FILE} -> ${OUT_FILE}"
         VERBATIM

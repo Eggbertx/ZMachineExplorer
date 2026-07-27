@@ -35,5 +35,9 @@ Object Lobby "Hotel Lobby"
 		"You are standing in the lobby of a finely furnished hotel.",
 	has   light;
 
+Nearby Chair "wooden desk"
+	with name "wooden" "desk",
+		 description "It's an old wooden desk.";
+
 Include "Grammar";
 
