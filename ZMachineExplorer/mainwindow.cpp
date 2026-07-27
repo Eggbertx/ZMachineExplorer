@@ -25,13 +25,12 @@ MainWindow::MainWindow(QWidget *parent)
     for (int i = 0; i < recentFiles.length(); i++) {
         ui->menuRecentStoryFiles->addAction(recentFiles[i]);
     }
-    connect(ui->menuRecentStoryFiles, &QMenu::triggered, this, &MainWindow::on_recentFileSelected);
-    connect(ui->menuInterpreterNumber, &QMenu::triggered, this, &MainWindow::on_interpreterNumberSelected);
-    connect(m_fileDialog, &QFileDialog::fileSelected, this, &MainWindow::on_fileDialog_accepted);
+    connectSignals();
 }
 
 MainWindow::~MainWindow()
 {
+    disconnectSignals();
     delete m_fileDialog;
     delete ui;
 }
@@ -70,28 +69,50 @@ void MainWindow::clearRecentFiles()
     }
 }
 
-void MainWindow::on_actionQuit_triggered()
+void MainWindow::connectSignals() {
+    connect(ui->actionQuit, &QAction::triggered, this, &MainWindow::onActionQuitTriggered);
+    connect(ui->actionOpenStoryFile, &QAction::triggered, this, &MainWindow::onActionOpenStoryFileTriggered);
+    connect(ui->menuRecentStoryFiles, &QMenu::triggered, this, &MainWindow::onRecentFileSelected);
+    connect(ui->menuInterpreterNumber, &QMenu::triggered, this, &MainWindow::onInterpreterNumberSelected);
+    connect(ui->actionClearHistory, &QAction::triggered, this, &MainWindow::onActionClearHistoryTriggered);
+    connect(ui->actionRestart, &QAction::triggered, this, &MainWindow::onActionRestartTriggered);
+    connect(ui->btnUpdateObjects, &QPushButton::pressed, this, &MainWindow::onBtnUpdateObjectsClicked);
+    connect(m_fileDialog, &QFileDialog::fileSelected, this, &MainWindow::onFileDialogAccepted);
+}
+
+void MainWindow::disconnectSignals() {
+    disconnect(ui->actionQuit, &QAction::triggered, this, &MainWindow::onActionQuitTriggered);
+    disconnect(ui->actionOpenStoryFile, &QAction::triggered, this, &MainWindow::onActionOpenStoryFileTriggered);
+    disconnect(ui->menuRecentStoryFiles, &QMenu::triggered, this, &MainWindow::onRecentFileSelected);
+    disconnect(ui->menuInterpreterNumber, &QMenu::triggered, this, &MainWindow::onInterpreterNumberSelected);
+    disconnect(ui->actionClearHistory, &QAction::triggered, this, &MainWindow::onActionClearHistoryTriggered);
+    disconnect(ui->actionRestart, &QAction::triggered, this, &MainWindow::onActionRestartTriggered);
+    disconnect(ui->btnUpdateObjects, &QPushButton::pressed, this, &MainWindow::onBtnUpdateObjectsClicked);
+    disconnect(m_fileDialog, &QFileDialog::fileSelected, this, &MainWindow::onFileDialogAccepted);
+}
+
+void MainWindow::onActionQuitTriggered()
 {
     QApplication::exit(0);
 }
 
-void MainWindow::on_actionOpenStoryFile_triggered()
+void MainWindow::onActionOpenStoryFileTriggered()
 {
     m_fileDialog->show();
 }
 
-void MainWindow::on_fileDialog_accepted(const QString &file)
+void MainWindow::onFileDialogAccepted(const QString &file)
 {
     openFile(file);
 }
 
-void MainWindow::on_recentFileSelected(QAction *recentFile)
+void MainWindow::onRecentFileSelected(QAction *recentFile)
 {
     if(recentFile != ui->actionClearHistory)
         openFile(recentFile->text(), false);
 }
 
-void MainWindow::on_interpreterNumberSelected(QAction *numberItem)
+void MainWindow::onInterpreterNumberSelected(QAction *numberItem)
 {
     using namespace ZMachineCore;
     QList<QAction*> actions = ui->menuInterpreterNumber->actions();
@@ -128,13 +149,13 @@ void MainWindow::on_interpreterNumberSelected(QAction *numberItem)
     m_vm.setInterpreterNum(num);
 }
 
-void MainWindow::on_actionClearHistory_triggered()
+void MainWindow::onActionClearHistoryTriggered()
 {
     clearRecentFiles();
 }
 
-void MainWindow::on_actionRestart_triggered() {}
+void MainWindow::onActionRestartTriggered() {}
 
-void MainWindow::on_btnUpdateObjects_clicked() {
+void MainWindow::onBtnUpdateObjectsClicked() {
     m_vm.getObjectList();
 }

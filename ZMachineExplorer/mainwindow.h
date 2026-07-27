@@ -23,17 +23,18 @@ public:
     ~MainWindow();
 	void openFile(QString path, bool addToRecent = true);
 	void clearRecentFiles();
+    void connectSignals();
+    void disconnectSignals();
 
 private slots:
-    void on_actionQuit_triggered();
-    void on_actionOpenStoryFile_triggered();
-    void on_fileDialog_accepted(const QString& filePath);
-	void on_recentFileSelected(QAction* recentFile);
-    void on_interpreterNumberSelected(QAction* numberItem);
-	void on_actionClearHistory_triggered();
-    void on_actionRestart_triggered();
-
-    void on_btnUpdateObjects_clicked();
+    void onActionQuitTriggered();
+    void onActionOpenStoryFileTriggered();
+    void onFileDialogAccepted(const QString& filePath);
+    void onRecentFileSelected(QAction* recentFile);
+    void onInterpreterNumberSelected(QAction* numberItem);
+    void onActionClearHistoryTriggered();
+    void onActionRestartTriggered();
+    void onBtnUpdateObjectsClicked();
 
 private:
     Ui::MainWindow *ui;
