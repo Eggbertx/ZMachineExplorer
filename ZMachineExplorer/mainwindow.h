@@ -6,6 +6,7 @@
 #include <QString>
 #include <zmachinevm.h>
 
+#include "headermodel.h"
 #include "recentfilesmanager.h"
 
 QT_BEGIN_NAMESPACE
@@ -41,5 +42,8 @@ private:
     QFileDialog* m_fileDialog;
     ZMachineCore::ZMachineVM m_vm;
 	RecentFilesManager m_recentMgr;
+    HeaderModel* m_headerModel;
+    HeaderModel* m_flags1Model;
+    HeaderModel* m_flags2Model;
 };
 #endif // MAINWINDOW_H

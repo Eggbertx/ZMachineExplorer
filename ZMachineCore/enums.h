@@ -1,3 +1,6 @@
+#ifndef ENUMS_H
+#define ENUMS_H
+
 namespace ZMachineCore {
 
 enum HeaderAddress {
@@ -112,3 +115,5 @@ enum InstructionForm {
 
 
 } // namespace ZMachineCore
+
+#endif // ENUMS_H

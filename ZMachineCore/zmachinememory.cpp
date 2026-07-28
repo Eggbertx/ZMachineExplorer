@@ -11,6 +11,10 @@ ZMachineMemory::ZMachineMemory()
 
 void ZMachineMemory::populate(QByteArray bytes)
 {
+    if (m_buffer.isOpen()) {
+        m_buffer.close();
+    }
+    m_bytes = bytes;
     m_buffer.setData(bytes);
     m_buffer.open(QIODevice::ReadWrite);
     m_buffer.seek(0);

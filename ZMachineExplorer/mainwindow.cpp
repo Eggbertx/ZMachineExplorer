@@ -2,6 +2,7 @@
 #include <QDir>
 #include <QMessageBox>
 
+#include "headermodel.h"
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
@@ -20,18 +21,29 @@ MainWindow::MainWindow(QWidget *parent)
     m_fileDialog->setAcceptMode(QFileDialog::AcceptOpen);
     ui->actionIBMPC->setChecked(true);
     ui->menuDebug->setEnabled(false);
-
+    m_headerModel = new HeaderModel(&m_vm, HeaderModel::TableMode::Header);
+    m_flags1Model = new HeaderModel(&m_vm, HeaderModel::TableMode::Flags1);
+    m_flags2Model = new HeaderModel(&m_vm, HeaderModel::TableMode::Flags2);
+    ui->headerTable->setModel(m_headerModel);
+    ui->flags1Table->setModel(m_flags1Model);
+    ui->flags2Table->setModel(m_flags2Model);
     const QStringList recentFiles = m_recentMgr.getRecentFiles();
     for (int i = 0; i < recentFiles.length(); i++) {
         ui->menuRecentStoryFiles->addAction(recentFiles[i]);
     }
     connectSignals();
+    for(int i = 1; i <= 3; i++) {
+        ui->tabWidget->setTabEnabled(i, false);
+    }
 }
 
 MainWindow::~MainWindow()
 {
     disconnectSignals();
     delete m_fileDialog;
+    delete m_headerModel;
+    delete m_flags1Model;
+    delete m_flags2Model;
     delete ui;
 }
 
@@ -58,6 +70,12 @@ void MainWindow::openFile(QString file, bool addToRecent)
     ui->actionRestart->setEnabled(true);
     ui->menuDebug->setEnabled(true);
     ui->btnUpdateObjects->setEnabled(true);
+    for(int i = 1; i <= 3; i++) {
+        ui->tabWidget->setTabEnabled(i, true);
+    }
+    m_headerModel->refresh();
+    m_flags1Model->refresh();
+    m_flags2Model->refresh();
 }
 
 void MainWindow::clearRecentFiles()
@@ -69,7 +87,8 @@ void MainWindow::clearRecentFiles()
     }
 }
 
-void MainWindow::connectSignals() {
+void MainWindow::connectSignals()
+{
     connect(ui->actionQuit, &QAction::triggered, this, &MainWindow::onActionQuitTriggered);
     connect(ui->actionOpenStoryFile, &QAction::triggered, this, &MainWindow::onActionOpenStoryFileTriggered);
     connect(ui->menuRecentStoryFiles, &QMenu::triggered, this, &MainWindow::onRecentFileSelected);
@@ -80,7 +99,8 @@ void MainWindow::connectSignals() {
     connect(m_fileDialog, &QFileDialog::fileSelected, this, &MainWindow::onFileDialogAccepted);
 }
 
-void MainWindow::disconnectSignals() {
+void MainWindow::disconnectSignals()
+{
     disconnect(ui->actionQuit, &QAction::triggered, this, &MainWindow::onActionQuitTriggered);
     disconnect(ui->actionOpenStoryFile, &QAction::triggered, this, &MainWindow::onActionOpenStoryFileTriggered);
     disconnect(ui->menuRecentStoryFiles, &QMenu::triggered, this, &MainWindow::onRecentFileSelected);
@@ -156,6 +176,7 @@ void MainWindow::onActionClearHistoryTriggered()
 
 void MainWindow::onActionRestartTriggered() {}
 
-void MainWindow::onBtnUpdateObjectsClicked() {
+void MainWindow::onBtnUpdateObjectsClicked()
+{
     m_vm.getObjectList();
 }

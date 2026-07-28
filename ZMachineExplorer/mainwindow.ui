@@ -33,7 +33,7 @@
        <enum>QTabWidget::TabPosition::North</enum>
       </property>
       <property name="currentIndex">
-       <number>2</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="tabGame">
        <attribute name="title">
@@ -95,7 +95,7 @@
              <x>0</x>
              <y>0</y>
              <width>640</width>
-             <height>348</height>
+             <height>322</height>
             </rect>
            </property>
            <attribute name="label">
@@ -103,22 +103,49 @@
            </attribute>
            <layout class="QVBoxLayout" name="verticalLayout_5">
             <item>
-             <widget class="QTableView" name="tableView"/>
+             <widget class="QTableView" name="headerTable">
+              <property name="editTriggers">
+               <set>QAbstractItemView::EditTrigger::SelectedClicked</set>
+              </property>
+             </widget>
             </item>
            </layout>
           </widget>
-          <widget class="QWidget" name="page_2">
+          <widget class="QWidget" name="flags1Page">
            <property name="geometry">
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>98</width>
-             <height>28</height>
+             <width>640</width>
+             <height>322</height>
             </rect>
            </property>
            <attribute name="label">
-            <string>Page 2</string>
+            <string>Flags 1</string>
            </attribute>
+           <layout class="QVBoxLayout" name="verticalLayout_7">
+            <item>
+             <widget class="QTableView" name="flags1Table"/>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="flags2Page">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>0</y>
+             <width>640</width>
+             <height>322</height>
+            </rect>
+           </property>
+           <attribute name="label">
+            <string>Flags 2</string>
+           </attribute>
+           <layout class="QVBoxLayout" name="verticalLayout_8">
+            <item>
+             <widget class="QTableView" name="flags2Table"/>
+            </item>
+           </layout>
           </widget>
          </widget>
         </item>
