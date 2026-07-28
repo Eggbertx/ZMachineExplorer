@@ -28,6 +28,7 @@ private:
     QVariant dataModeFlags2(int row) const;
     ZMachineCore::ZMachineVM* m_vm;
     TableMode m_mode;
+    int m_rows;
 };
 
 #endif // HEADERMODEL_H
